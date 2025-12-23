@@ -1,6 +1,7 @@
 import django_filters
 from .models import Message
 
+
 class MessageFilter(django_filters.FilterSet):
     # Keep query param names created_after/created_before but map to sent_at
     created_after = django_filters.DateTimeFilter(field_name='sent_at', lookup_expr='gte')

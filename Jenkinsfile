@@ -52,6 +52,16 @@ pipeline {
         sh '''
           pip3 install -r ../requirements.txt
           pip3 install pytest pytest-django pytest-html pytest-cov
+          pip3 install pre-commit flake8
+        '''
+      }
+    }
+
+    stage('Lint (pre-commit)') {
+      steps {
+        sh '''
+          pre-commit --version
+          pre-commit run --all-files --show-diff-on-failure
         '''
       }
     }

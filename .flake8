@@ -1,0 +1,20 @@
+[flake8]
+max-line-length = 120
+exclude =
+    .git,
+    .github,
+    __pycache__,
+    .venv,
+    venv,
+    env,
+    migrations,
+    node_modules,
+    build,
+    dist
+ignore = E203, W503
+select = E,F,W
+per-file-ignores =
+    chats/views.py:F401
+    messaging_app/settings.py:E501
+    chats/__init__.py:F401
+    messaging_app/__init__.py:F401

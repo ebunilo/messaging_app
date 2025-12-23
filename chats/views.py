@@ -57,7 +57,11 @@ class MessageViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         # Restrict messages to those in conversations the user participates in
-        conversation_id = self.kwargs.get('conversation_pk') or self.kwargs.get('conversation_id') or self.request.query_params.get('conversation_id')
+        conversation_id = (
+            self.kwargs.get('conversation_pk')
+            or self.kwargs.get('conversation_id')
+            or self.request.query_params.get('conversation_id')
+        )
         base_qs = Message.objects.filter(conversation__participants=self.request.user)
         if conversation_id:
             base_qs = base_qs.filter(conversation_id=conversation_id)

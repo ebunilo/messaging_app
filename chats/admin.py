@@ -1,3 +1,4 @@
-from django.contrib import admin
+"""Admin registrations for chats app.
 
-# Register your models here.
+Intentionally left minimal; add registrations as needed.
+"""

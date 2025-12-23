@@ -3,6 +3,8 @@ from django.contrib.auth.models import AbstractUser
 import uuid
 
 # Custom User model
+
+
 class User(AbstractUser):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, db_index=True)  # user_id
     email = models.EmailField(unique=True, db_index=True)
@@ -38,6 +40,8 @@ class User(AbstractUser):
 
 
 # Conversation model
+
+
 class Conversation(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, db_index=True)  # conversation_id
     participants = models.ManyToManyField(User, related_name='conversations')
@@ -53,6 +57,8 @@ class Conversation(models.Model):
 
 
 # Message model
+
+
 class Message(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, db_index=True)  # message_id
     sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sent_messages')
