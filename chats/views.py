@@ -6,6 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend
 from .filters import MessageFilter
 from rest_framework.exceptions import PermissionDenied
+from drf_spectacular.utils import extend_schema
 
 from .models import Conversation, Message
 from .serializers import ConversationSerializer, MessageSerializer
@@ -35,6 +36,7 @@ class ConversationViewSet(viewsets.ModelViewSet):
         headers = self.get_success_headers(serializer.data)
         return Response(self.get_serializer(convo).data, status=status.HTTP_201_CREATED, headers=headers)
 
+    @extend_schema(operation_id='conversation_send_message', exclude=True)
     @action(detail=True, methods=['post'], url_path='messages')
     def send_message(self, request, pk=None):
         conversation = self.get_object()

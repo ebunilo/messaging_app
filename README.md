@@ -37,31 +37,38 @@ Validation rules:
 - At least 2 participants.
 - Each nested message must have non-blank `message_body`.
 
+## Notable recent improvements
+
+- API documentation (OpenAPI/Swagger) powered by drf-spectacular:
+  - Schema: `/api/schema/`
+  - Swagger UI: `/api/docs/`
+  - Redoc: `/api/redoc/`
+  - Config in [messaging_app/settings.py](messaging_app/settings.py) and routes in [messaging_app/urls.py](messaging_app/urls.py).
+- JWT authentication added via SimpleJWT:
+  - Obtain: `POST /api/token/`
+  - Refresh: `POST /api/token/refresh/`
+  - See [messaging_app/urls.py](messaging_app/urls.py) and `SIMPLE_JWT` in [messaging_app/settings.py](messaging_app/settings.py).
+- Linting and hooks:
+  - flake8 config in [.flake8](.flake8) and pre-commit hooks in [.pre-commit-config.yaml](.pre-commit-config.yaml).
+- CI/CD:
+  - GitHub Actions pipeline runs flake8, tests with MySQL, and uploads coverage ([.github/workflows/ci.yml](.github/workflows/ci.yml)).
+- Containerization and Kubernetes:
+  - Docker dev setup ([Dockerfile](Dockerfile), [docker-compose.yml](docker-compose.yml)).
+  - Blue/green manifests and service/ingress ([blue_deployment.yaml](blue_deployment.yaml), [green_deployment.yaml](green_deployment.yaml), [kubeservice.yaml](kubeservice.yaml), [ingress.yaml](ingress.yaml)) with helper scripts ([kubctl-0x02](kubctl-0x02), [kubctl-0x03](kubctl-0x03), [messaging_app/kubctl-0x01](messaging_app/kubctl-0x01)).
+- CORS enabled for development (see middleware and app in [messaging_app/settings.py](messaging_app/settings.py)).
+- Database flexibility:
+  - Uses MySQL in CI via env vars and falls back to SQLite locally (see `DB_ENGINE` block in [messaging_app/settings.py](messaging_app/settings.py)).
+- Pagination defaults standardized: PageNumberPagination with page size 20 (see `REST_FRAMEWORK` in [messaging_app/settings.py](messaging_app/settings.py)).
+- Nested message routes using DRF nested routers (see [chats/urls.py](chats/urls.py)).
+- Postman collection and guide included ([post_man-Collections](post_man-Collections), [post_man-Collections.md](post_man-Collections.md)).
+
 ## Views / Endpoints
 
-Base API prefix: `/api/` (see [`messaging_app/urls.py`](messaging_app/urls.py)).
+Base API prefix: `/api/` (see [messaging_app/urls.py](messaging_app/urls.py)).
 
-Conversations:
-
-- `GET /api/conversations/` (list user’s conversations)
-- `POST /api/conversations/`
-- `GET /api/conversations/{uuid}/`
-- `PATCH /api/conversations/{uuid}/`
-- `DELETE /api/conversations/{uuid}/`
-- `POST /api/conversations/{uuid}/messages/` (custom action to send a message)
-
-Messages (flat):
-
-- `GET /api/messages/?conversation=<uuid>&sender=<uuid>`
-- `POST /api/messages/`
-- `GET /api/messages/{uuid}/`
-- `PATCH /api/messages/{uuid}/`
-- `DELETE /api/messages/{uuid}/`
-
-Search / filter:
-
-- Conversations: search on `messages__message_body`, filter `participants`, order by `created_at`.
-- Messages: search `message_body`, filter `conversation`, `sender`, order by `sent_at`.
+- Swagger UI: `/api/docs/`, Redoc: `/api/redoc/`, Schema: `/api/schema/`
+- JWT: `POST /api/token/`, `POST /api/token/refresh/`
+- Conversations and messages routes (including nested): see [chats/urls.py](chats/urls.py)
 
 ## Quick Start
 
@@ -110,9 +117,9 @@ curl -u user:pass -X POST http://localhost:8000/api/messages/ \
 
 ## Security Notes
 
-- Development `SECRET_KEY` in [`settings.py`](messaging_app/settings.py); replace for production.
-- Switch `USERNAME_FIELD` in [`User`](chats/models.py) to `email` if email-based login desired.
-- Add token/JWT auth if required (not included).
+- Development `SECRET_KEY` in [messaging_app/settings.py](messaging_app/settings.py); replace for production.
+- Auth: Session, Basic, and JWT (SimpleJWT) are enabled. Rotate keys and tune lifetimes in `SIMPLE_JWT` in [messaging_app/settings.py](messaging_app/settings.py).
+- Switch `USERNAME_FIELD` in [`chats.models.User`](chats/models.py) to email if email-based login is preferred.
 
 ## Testing
 
@@ -126,7 +133,7 @@ Placeholder test file [`tests.py`](chats/tests.py). Add API tests using `APITest
 
 ## License
 
-**MIT**
+MIT
 
 ## Maintenance
 

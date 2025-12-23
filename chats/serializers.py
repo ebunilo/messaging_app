@@ -1,4 +1,6 @@
 from rest_framework import serializers
+from drf_spectacular.utils import extend_schema_field
+from drf_spectacular.types import OpenApiTypes
 from .models import User, Conversation, Message
 
 
@@ -58,9 +60,11 @@ class ConversationSerializer(serializers.ModelSerializer):
         ]
         read_only_fields = ['id', 'created_at']
 
+    @extend_schema_field(OpenApiTypes.INT)
     def get_message_count(self, obj):
         return obj.messages.count()
 
+    @extend_schema_field(MessageSerializer)
     def get_last_message(self, obj):
         last = obj.messages.order_by('-sent_at').first()
         return MessageSerializer(last).data if last else None
